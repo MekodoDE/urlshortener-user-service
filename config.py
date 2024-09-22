@@ -5,7 +5,6 @@ class Config(object):
     API_TITLE = 'user-service'
     OPENAPI_VERSION = '3.0.2'
     OPENAPI_URL_PREFIX = '/'
-    URL_PREFIX = '/users/'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///users.db'
     CORS_ORIGINS = ["*"]
     JWT_SECRET_KEY = "super-secret"

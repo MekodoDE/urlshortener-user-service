@@ -9,10 +9,9 @@ from .utils import hash_password
 from app.extensions.database import db
 from app.models import UserModel
 from app.models.schemas import UserSchema, BasicUserSchema, UserQueryArgsSchema
-from app import config
 
 # Create a Blueprint for User management
-blp = Blueprint('User', 'user', description='User management', url_prefix=config['URL_PREFIX'])
+blp = Blueprint('User', 'user', description='User management', url_prefix="/users/")
 
 
 @blp.route('/')
