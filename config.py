@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 class Config(object):
     DEBUG = False
     TESTING = False
@@ -11,7 +9,7 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///users.db'
     CORS_ORIGINS = ["*"]
     JWT_SECRET_KEY = "super-secret"
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1024)
+    JWT_ACCESS_TOKEN_EXPIRES_MINUTES = 1440
 class ProductionConfig(Config):
     DATABASE_URI = 'mysql://user@127.0.0.1/users'
 class DevelopmentConfig(Config):
