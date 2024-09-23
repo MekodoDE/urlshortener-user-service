@@ -7,7 +7,7 @@ class Config(object):
     OPENAPI_URL_PREFIX = '/'
     URL_PREFIX = '/users/'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///users.db'
-    CORS_ORIGINS = ["*"]
+    CORS_ORIGINS = "*"
     JWT_SECRET_KEY = "super-secret"
     JWT_ACCESS_TOKEN_EXPIRES_MINUTES = 1440
 class ProductionConfig(Config):

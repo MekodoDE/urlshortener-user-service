@@ -19,6 +19,7 @@ def create_app():
     app.config.from_object(CONFIG_TYPE)
     app.config.from_mapping(os.environ)
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=int(app.config['JWT_ACCESS_TOKEN_EXPIRES_MINUTES']))
+    app.config['CORS_ORIGINS'] = [origin.strip() for origin in app.config['CORS_ORIGINS'].split(',')]
 
     # Enable Cross-Origin Resource Sharing (CORS) with origins specified in configuration
     CORS(app, origins=app.config['CORS_ORIGINS'])
