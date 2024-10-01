@@ -91,6 +91,10 @@ class UserById(MethodView):
         if current_user_id != id and current_user_id.role != "admin":
             abort(403, message="You are not authorized to modify this user")
 
+        # If the password is being changed, hash it
+        if 'password' in data:
+            data['password'] = hash_password(data['password'])
+
         for key, value in data.items():
             setattr(user, key, value)
 
