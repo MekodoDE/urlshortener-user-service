@@ -1,12 +1,14 @@
 import pytest
 from .conftest import UserData
 
+url_prefix = '/users'
+
 def test_create_user(client):
     """
     Test user creation.
     Verifies user is created and 'id' is returned.
     """
-    response = client.post('/', json={
+    response = client.post(url_prefix+  '/', json={
         'username': UserData.username,
         'password': UserData.password,
         'email': UserData.email,
@@ -26,7 +28,7 @@ def test_login(client):
         'username': UserData.username,
         'password': UserData.password
     }
-    response = client.post('/login', json=login_data)
+    response = client.post(url_prefix + '/login', json=login_data)
     assert response.status_code == 200
     data = response.get_json()
     assert 'access_token' in data
@@ -37,7 +39,7 @@ def test_all_user_list(client, headers):
     Test access to user list.
     Verifies that access is forbidden without proper credentials.
     """
-    response = client.get('/', headers=headers)
+    response = client.get(url_prefix + '/', headers=headers)
     assert response.status_code == 403
 
 def test_get_user(client, headers):
@@ -58,7 +60,7 @@ def test_update_user(client, headers):
     update_data = {
         'email': 'newemail@example.com'
     }
-    response = client.put(f'/{UserData.id}', json=update_data, headers=headers)
+    response = client.put(url_prefix + f'/{UserData.id}', json=update_data, headers=headers)
     assert response.status_code == 200
     data = response.get_json()
     assert data['email'] == update_data['email']
@@ -68,8 +70,8 @@ def test_delete_user(client, headers):
     Test user deletion.
     Verifies that the user is deleted and cannot be retrieved.
     """
-    response = client.delete(f'/{UserData.id}', headers=headers)
+    response = client.delete(url_prefix + f'/{UserData.id}', headers=headers)
     assert response.status_code == 204
 
-    response = client.get(f'/{UserData.id}', headers=headers)
+    response = client.get(url_prefix + f'/{UserData.id}', headers=headers)
     assert response.status_code == 404
