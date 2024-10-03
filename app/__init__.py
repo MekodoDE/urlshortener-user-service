@@ -20,6 +20,8 @@ def create_app():
     app.config.from_mapping(os.environ)
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(minutes=int(app.config['JWT_ACCESS_TOKEN_EXPIRES_MINUTES']))
     app.config['CORS_ORIGINS'] = [origin.strip() for origin in app.config['CORS_ORIGINS'].split(',')]
+    if all(key in app.config for key in ["DB_USER", "DB_PASSWORD", "DB_HOST", "DB_PORT", "DB_NAME"]):
+        app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{app.config["DB_USER"]}:{app.config["DB_PASSWORD"]}@{app.config["DB_HOST"]}:{app.config["DB_PORT"]}/{app.config["DB_NAME"]}'
 
     # Enable Cross-Origin Resource Sharing (CORS) with origins specified in configuration
     CORS(app, origins=app.config['CORS_ORIGINS'])
