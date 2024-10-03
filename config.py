@@ -11,7 +11,12 @@ class Config(object):
     JWT_SECRET_KEY = "super-secret"
     JWT_ACCESS_TOKEN_EXPIRES_MINUTES = 1440
 class ProductionConfig(Config):
-    DATABASE_URI = 'mysql://user@127.0.0.1/users'
+    DB_HOST = '127.0.0.1'
+    DB_PORT = '3306'
+    DB_USER = 'user'
+    DB_PASSWORD = 'password'
+    DB_NAME = 'users'
+    SQLALCHEMY_DATABASE_URI = f'mysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 class DevelopmentConfig(Config):
     DEBUG = True
 class TestConfig(Config):
