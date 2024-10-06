@@ -3,7 +3,8 @@ from flask import jsonify
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from flask_jwt_extended import create_access_token, get_jwt, jwt_required
+from flask_jwt_extended.exceptions import JWTExtendedException
 
 from .utils import hash_password
 from app.extensions.database import db
@@ -27,11 +28,17 @@ class Users(MethodView):
         """
         Get a list of Users based on query parameters.
         """
-        current_user_id = uuid.UUID(get_jwt_identity())
-        current_user = UserModel.query.get_or_404(current_user_id, description="User not found")
+        try:
+            jwt_claims = get_jwt()
+            user_id = uuid.UUID(jwt_claims.get("sub"))
+            role = jwt_claims.get("role", "viewer")  # Default to 'viewer' if no role is present
+        except JWTExtendedException as e:
+            abort(401, message="Invalid or expired token")  # Handle token issues specifically
 
-        if current_user.role != "admin":
-            abort(403, message="You are not authorized")
+        UserModel.query.get_or_404(user_id, description="User not found")
+
+        if role != "admin":
+            abort(403, message="You are not authorized to perform this action")
 
         # Ensure to execute query with .all()
         return UserModel.query.filter_by(**args).all()
@@ -70,11 +77,17 @@ class UserById(MethodView):
         """
         Get details of a User by its id.
         """
-        current_user_id = uuid.UUID(get_jwt_identity())
-        user = UserModel.query.get_or_404(id, description="User not found")
+        try:
+            jwt_claims = get_jwt()
+            user_id = uuid.UUID(jwt_claims.get("sub"))
+            role = jwt_claims.get("role", "viewer")  # Default to 'viewer' if no role is present
+        except JWTExtendedException as e:
+            abort(401, message="Invalid or expired token")  # Handle token issues specifically
 
-        if current_user_id != id and current_user_id.role != "admin":
-            abort(403, message="You are not authorized")
+        if user_id != id and role != "admin":
+            abort(403, message="You are not authorized to perform this action")
+
+        user = UserModel.query.get_or_404(id, description="User not found")
 
         return user
     
@@ -85,11 +98,17 @@ class UserById(MethodView):
         """
         Update details of a user by its id.
         """
-        current_user_id = uuid.UUID(get_jwt_identity())
-        user = UserModel.query.get_or_404(id, description="User not found")
+        try:
+            jwt_claims = get_jwt()
+            user_id = uuid.UUID(jwt_claims.get("sub"))
+            role = jwt_claims.get("role", "viewer")  # Default to 'viewer' if no role is present
+        except JWTExtendedException as e:
+            abort(401, message="Invalid or expired token")  # Handle token issues specifically
 
-        if current_user_id != id and current_user_id.role != "admin":
-            abort(403, message="You are not authorized to modify this user")
+        if user_id != id and role != "admin":
+            abort(403, message="You are not authorized to perform this action")
+
+        user = UserModel.query.get_or_404(id, description="User not found")
 
         # If the password is being changed, hash it
         if 'password' in data:
@@ -112,11 +131,17 @@ class UserById(MethodView):
         """
         Delete a user by its id.
         """
-        current_user_id = uuid.UUID(get_jwt_identity())
-        user = UserModel.query.get_or_404(id, description="User not found")
+        try:
+            jwt_claims = get_jwt()
+            user_id = uuid.UUID(jwt_claims.get("sub"))
+            role = jwt_claims.get("role", "viewer")  # Default to 'viewer' if no role is present
+        except JWTExtendedException as e:
+            abort(401, message="Invalid or expired token")  # Handle token issues specifically
 
-        if current_user_id != id and current_user_id.role != "admin":
-            abort(403, message="You are not authorized to delete this user")
+        if user_id != id and role != "admin":
+            abort(403, message="You are not authorized to perform this action")
+        
+        user = UserModel.query.get_or_404(id, description="User not found")
 
         try:
             db.session.delete(user)
