@@ -1,6 +1,6 @@
 flask==3.0.2
 flask_smorest==0.42.3
-flask_marshmallow==1.2.0
+flask_marshmallow==1.2.1
 flask_sqlalchemy==3.1.1
 flask_cors==4.0.0
 Flask-JWT-Extended==4.6.0
