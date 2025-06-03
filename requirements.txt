@@ -6,6 +6,6 @@ flask_cors==6.0.0
 Flask-JWT-Extended==4.7.1
 sqlalchemy_utils==0.41.2
 marshmallow_sqlalchemy==1.4.2
-pytest==8.3.5
+pytest==8.4.0
 pytest-env==1.1.5
 mysqlclient==2.2.7
